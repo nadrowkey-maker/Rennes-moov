@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#2D6A4F">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="description" content="ForêtMOOV — Courez, rencontrez, partagez. Le réseau social du sport en nature à Rennes.">
+  <title>ForêtMOOV — Sport & Rencontres</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <!-- Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <!-- Charts -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+  <!-- App CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- ======================================================================
+     SPLASH SCREEN
+     ====================================================================== -->
+<div id="splash">
+  <div class="splash-logo-ring">
+    <i class="fas fa-leaf splash-logo-icon"></i>
+  </div>
+  <h1 class="splash-title">Forêt<span>MOOV</span></h1>
+  <p class="splash-sub">Courez · Rencontrez · Partagez</p>
+  <div class="splash-progress"><div class="splash-progress-fill"></div></div>
+</div>
+
+<!-- ======================================================================
+     ONBOARDING
+     ====================================================================== -->
+<div id="onboarding-overlay">
+  <!-- Slide 1 -->
+  <div class="onboarding-slide active" id="ob-slide-1">
+    <div class="onboarding-img-wrap">
+      <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?auto=format&fit=crop&w=800&q=80" alt="Forêt">
+      <div class="onboarding-img-overlay"></div>
+    </div>
+    <div class="onboarding-content">
+      <div class="onboarding-tag"><i class="fas fa-map-marker-alt"></i> Rennes Métropole</div>
+      <h2 class="onboarding-title">19 parcours<br><span>à explorer</span></h2>
+      <p class="onboarding-desc">Gayeulles, Thabor, Liffré, Soeuvres… Chaque espace vert de Rennes devient votre terrain de jeu. Trails filtrés par niveau, durée et équipements.</p>
+    </div>
+    <div class="onboarding-footer">
+      <div class="onboarding-dots">
+        <div class="onboarding-dot active"></div>
+        <div class="onboarding-dot"></div>
+        <div class="onboarding-dot"></div>
+      </div>
+      <button class="btn btn-primary btn-xl btn-full" onclick="Onboarding.next()">Suivant <i class="fas fa-arrow-right"></i></button>
+    </div>
+  </div>
+  <!-- Slide 2 -->
+  <div class="onboarding-slide" id="ob-slide-2">
+    <div class="onboarding-img-wrap">
+      <img src="https://images.unsplash.com/photo-1571008887538-b36bb32f4571?auto=format&fit=crop&w=800&q=80" alt="Courir ensemble">
+      <div class="onboarding-img-overlay"></div>
+    </div>
+    <div class="onboarding-content">
+      <div class="onboarding-tag"><i class="fas fa-satellite-dish"></i> Radar Social Live</div>
+      <h2 class="onboarding-title">Voyez qui<br><span>court près de vous</span></h2>
+      <p class="onboarding-desc">Le Radar Social affiche les sportifs actifs en temps réel sur la carte. Envoyez un "Poc", rejoignez une session, créez un club éphémère.</p>
+    </div>
+    <div class="onboarding-footer">
+      <div class="onboarding-dots">
+        <div class="onboarding-dot"></div>
+        <div class="onboarding-dot active"></div>
+        <div class="onboarding-dot"></div>
+      </div>
+      <button class="btn btn-primary btn-xl btn-full" onclick="Onboarding.next()">Suivant <i class="fas fa-arrow-right"></i></button>
+    </div>
+  </div>
+  <!-- Slide 3 -->
+  <div class="onboarding-slide" id="ob-slide-3">
+    <div class="onboarding-img-wrap">
+      <img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?auto=format&fit=crop&w=800&q=80" alt="Communauté">
+      <div class="onboarding-img-overlay"></div>
+    </div>
+    <div class="onboarding-content">
+      <div class="onboarding-tag"><i class="fas fa-users"></i> Matching Sportif</div>
+      <h2 class="onboarding-title">Trouvez votre<br><span>partenaire idéal</span></h2>
+      <p class="onboarding-desc">Notre algorithme connecte les sportifs compatibles selon leur allure, niveau et disponibilités. Sport & rencontres amicales, enfin réunis.</p>
+    </div>
+    <div class="onboarding-footer">
+      <div class="onboarding-dots">
+        <div class="onboarding-dot"></div>
+        <div class="onboarding-dot"></div>
+        <div class="onboarding-dot active"></div>
+      </div>
+      <button class="btn btn-energy btn-xl btn-full" onclick="Onboarding.finish()">Commencer <i class="fas fa-leaf"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- ======================================================================
+     TOAST / DYNAMIC ISLAND
+     ====================================================================== -->
+<div id="toast-island">
+  <div class="toast-icon toast-icon-green" id="toast-icon"><i class="fas fa-leaf" id="toast-icon-i"></i></div>
+  <div class="toast-text">
+    <span class="toast-title" id="toast-title">ForêtMOOV</span>
+    <span class="toast-msg" id="toast-msg">Bienvenue</span>
+  </div>
+</div>
+
+<!-- ======================================================================
+     APP ROOT
+     ====================================================================== -->
+<div id="app-root">
+
+  <!-- TOP BAR -->
+  <header id="top-bar">
+    <div class="top-bar-logo">
+      <div class="top-bar-logo-mark">
+        <svg viewBox="0 0 24 24"><path d="M17 8C8 10 5.9 16.17 3.82 21.34L5.71 22l1-2.3A4.49 4.49 0 008 20C19 20 22 3 22 3c-1 2-8 2-8 2 5-4 8-2 8-2S18 8 17 8z"/></svg>
+      </div>
+      <span class="top-bar-title">Forêt<span>MOOV</span></span>
+    </div>
+    <div class="top-bar-actions">
+      <div class="top-bar-badge" id="live-count-badge">
+        <div class="live-dot"></div>
+        <span id="live-count">47</span> actifs
+      </div>
+      <div class="avatar-btn" onclick="App.nav('profile')">
+        <img src="https://ui-avatars.com/api/?name=Flavien+G&background=2D6A4F&color=fff&bold=true&font-size=0.4" alt="Mon profil" id="my-avatar-top">
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN SCROLL AREA -->
+  <main id="main-scroll" class="no-scrollbar">
+
+    <!-- ============================================================ -->
+    <!-- VUE : ACCUEIL                                                 -->
+    <!-- ============================================================ -->
+    <section class="view active" id="view-home">
+
+      <!-- Hero Banner -->
+      <div class="hero-banner">
+        <div class="hero-tag"><i class="fas fa-sun"></i> Beau temps · +15°C · Rennes</div>
+        <h2 class="hero-title" id="hero-greeting">Bonjour, Flavien 👋</h2>
+        <p class="hero-subtitle" id="hero-subtitle">47 sportifs actifs en ce moment dans vos parcs</p>
+        <div class="flex gap-3">
+          <button class="btn btn-energy btn-md" onclick="App.nav('radar')">
+            <i class="fas fa-satellite-dish"></i> Radar Live
+          </button>
+          <button class="btn btn-ghost btn-md" style="background:rgba(255,255,255,0.2);color:white;border-color:rgba(255,255,255,0.3);" onclick="App.nav('explore')">
+            <i class="fas fa-map"></i> Explorer
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Stats -->
+      <div class="card card-p-sm">
+        <div class="flex justify-between items-center mb-3">
+          <span class="text-sm fw-8 text-dark">Votre semaine</span>
+          <span class="text-xs text-muted">Cette semaine</span>
+        </div>
+        <div class="flex justify-between">
+          <div class="stat-block">
+            <span class="stat-value" id="stat-km">0</span>
+            <span class="stat-label">km</span>
+          </div>
+          <div style="width:1px;background:var(--color-border)"></div>
+          <div class="stat-block">
+            <span class="stat-value" id="stat-sessions">0</span>
+            <span class="stat-label">sessions</span>
+          </div>
+          <div style="width:1px;background:var(--color-border)"></div>
+          <div class="stat-block">
+            <span class="stat-value" id="stat-friends">0</span>
+            <span class="stat-label">rencontres</span>
+          </div>
+          <div style="width:1px;background:var(--color-border)"></div>
+          <div class="stat-block">
+            <span class="stat-value" id="stat-streak">0</span>
+            <span class="stat-label">série</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mini Radar -->
+      <div class="card" style="overflow:hidden;">
+        <div class="flex justify-between items-center p-4">
+          <div>
+            <div class="text-sm fw-8 text-dark">Radar Social</div>
+            <div class="text-xs text-muted mt-1"><span id="home-mini-active">23</span> sportifs visibles</div>
+          </div>
+          <button class="btn btn-primary btn-sm" onclick="App.nav('radar')">Voir tout <i class="fas fa-arrow-right"></i></button>
+        </div>
+        <div class="map-wrapper" style="border-radius:0;height:200px;" id="home-mini-map-wrap">
+          <div id="home-mini-map" style="width:100%;height:100%;"></div>
+        </div>
+      </div>
+
+      <!-- Clubs éphémères du moment -->
+      <div>
+        <div class="section-header">
+          <span class="section-title">Clubs actifs maintenant</span>
+          <span class="section-action" onclick="App.nav('clubs')">Voir tout</span>
+        </div>
+        <div id="home-clubs-list" class="flex flex-col gap-3"></div>
+      </div>
+
+      <!-- Matches suggérés -->
+      <div>
+        <div class="section-header">
+          <span class="section-title">Vos matches du jour</span>
+          <span class="section-action" onclick="App.nav('match')">Tous les matches</span>
+        </div>
+        <div id="home-matches-preview" class="flex flex-col gap-3"></div>
+      </div>
+
+      <!-- Activité récente -->
+      <div class="card card-p">
+        <div class="section-header mb-3">
+          <span class="text-sm fw-8 text-dark">Activité récente</span>
+        </div>
+        <div id="home-activity-feed"></div>
+      </div>
+
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- VUE : RADAR SOCIAL                                            -->
+    <!-- ============================================================ -->
+    <section class="view" id="view-radar" style="padding:0;gap:0;">
+      <!-- Map Full -->
+      <div class="relative" style="height:calc(100dvh - 140px);">
+        <div id="radar-map" style="width:100%;height:100%;"></div>
+
+        <!-- Overlay Stats -->
+        <div class="map-overlay-stats" id="radar-overlay-stats">
+          <div class="map-stat-row">
+            <div class="map-stat-dot map-stat-dot-green"></div>
+            <span id="radar-active-count">47 actifs</span>
+          </div>
+          <div class="map-stat-row mt-1" style="margin-top:4px;">
+            <div class="map-stat-dot map-stat-dot-orange"></div>
+            <span id="radar-clubs-count">5 clubs</span>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="map-overlay-controls">
+          <div class="map-ctrl-btn" id="ctrl-center" title="Centrer" onclick="RadarMap.centerView()"><i class="fas fa-crosshairs"></i></div>
+          <div class="map-ctrl-btn" id="ctrl-filter" title="Filtres" onclick="RadarMap.toggleFilterPanel()"><i class="fas fa-sliders-h"></i></div>
+          <div class="map-ctrl-btn" id="ctrl-clubs" title="Clubs" onclick="App.nav('clubs')"><i class="fas fa-users"></i></div>
+          <div class="map-ctrl-btn" id="ctrl-create-club" title="Créer un club" onclick="ClubSystem.openCreateModal()"><i class="fas fa-plus"></i></div>
+        </div>
+
+        <!-- Filter panel (hidden by default) -->
+        <div id="radar-filter-panel" style="display:none;position:absolute;bottom:0;left:0;right:0;z-index:600;background:rgba(255,255,255,0.97);backdrop-filter:blur(16px);border-radius:24px 24px 0 0;padding:16px 20px 20px;border-top:1px solid var(--forest-200);box-shadow:0 -4px 20px rgba(0,0,0,0.08);">
+          <div class="flex justify-between items-center mb-4">
+            <span class="text-base fw-8 text-dark">Filtrer le radar</span>
+            <button onclick="RadarMap.toggleFilterPanel()" style="background:var(--gray-100);border:none;width:32px;height:32px;border-radius:50%;cursor:pointer;font-size:14px;display:flex;align-items:center;justify-content:center;"><i class="fas fa-times"></i></button>
+          </div>
+          <p class="text-xs fw-7 text-muted mb-2" style="text-transform:uppercase;letter-spacing:0.5px;">Allure</p>
+          <div class="filter-bar mb-4" id="filter-pace-bar">
+            <div class="chip chip-active" data-pace="all" onclick="RadarMap.filterByPace('all',this)">Tous</div>
+            <div class="chip chip-default" data-pace="marche" onclick="RadarMap.filterByPace('marche',this)"><i class="fas fa-walking"></i> Marche</div>
+            <div class="chip chip-default" data-pace="footing" onclick="RadarMap.filterByPace('footing',this)"><i class="fas fa-running"></i> Footing</div>
+            <div class="chip chip-default" data-pace="trail" onclick="RadarMap.filterByPace('trail',this)"><i class="fas fa-mountain"></i> Trail</div>
+          </div>
+          <p class="text-xs fw-7 text-muted mb-2" style="text-transform:uppercase;letter-spacing:0.5px;">Zone</p>
+          <div class="filter-bar" id="filter-zone-bar">
+            <div class="chip chip-active" data-zone="all" onclick="RadarMap.filterByZone('all',this)">Tous</div>
+            <div class="chip chip-default" data-zone="gayeulles" onclick="RadarMap.filterByZone('gayeulles',this)">Gayeulles</div>
+            <div class="chip chip-default" data-zone="thabor" onclick="RadarMap.filterByZone('thabor',this)">Thabor</div>
+            <div class="chip chip-default" data-zone="beaulieu" onclick="RadarMap.filterByZone('beaulieu',this)">Campus</div>
+            <div class="chip chip-default" data-zone="beauregard" onclick="RadarMap.filterByZone('beauregard',this)">Beauregard</div>
+            <div class="chip chip-default" data-zone="soeuvres" onclick="RadarMap.filterByZone('soeuvres',this)">Soeuvres</div>
+            <div class="chip chip-default" data-zone="lifre" onclick="RadarMap.filterByZone('lifre',this)">Liffré</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom sheet — list of nearby users -->
+      <div style="position:absolute;bottom:0;left:0;right:0;z-index:400;">
+        <div style="background:rgba(255,255,255,0.97);backdrop-filter:blur(20px);border-radius:24px 24px 0 0;padding:12px 16px 80px;border-top:1px solid var(--forest-100);box-shadow:0 -4px 24px rgba(0,0,0,0.08);">
+          <div style="width:36px;height:4px;background:var(--gray-300);border-radius:99px;margin:0 auto 12px;"></div>
+          <div class="flex justify-between items-center mb-3">
+            <span class="text-sm fw-8 text-dark">À proximité</span>
+            <span class="text-xs text-forest fw-7" id="nearby-dist-label">< 1 km</span>
+          </div>
+          <div id="radar-nearby-list" class="flex gap-3 overflow-x-auto no-scrollbar pb-1"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- VUE : EXPLORER LES PARCOURS                                   -->
+    <!-- ============================================================ -->
+    <section class="view" id="view-explore">
+
+      <!-- Search -->
+      <div class="input-wrapper">
+        <i class="fas fa-search input-icon"></i>
+        <input type="search" class="input-search" placeholder="Rechercher un parcours, une forêt..." id="explore-search" oninput="Explorer.search(this.value)">
+      </div>
+
+      <!-- Filters -->
+      <div>
+        <div class="filter-bar" id="explore-pace-filter">
+          <div class="chip chip-active" data-pace="all" onclick="Explorer.setPaceFilter('all',this)"><i class="fas fa-list"></i> Tous</div>
+          <div class="chip chip-default" data-pace="marche" onclick="Explorer.setPaceFilter('marche',this)"><i class="fas fa-walking"></i> Marche</div>
+          <div class="chip chip-default" data-pace="footing" onclick="Explorer.setPaceFilter('footing',this)"><i class="fas fa-running"></i> Footing</div>
+          <div class="chip chip-default" data-pace="trail" onclick="Explorer.setPaceFilter('trail',this)"><i class="fas fa-mountain"></i> Trail</div>
+        </div>
+        <div class="filter-bar mt-2" id="explore-extra-filter">
+          <div class="chip chip-default" data-filter="eau" onclick="Explorer.toggleAmenityFilter('eau',this)"><i class="fas fa-tint"></i> Point d'eau</div>
+          <div class="chip chip-default" data-filter="ombre" onclick="Explorer.toggleAmenityFilter('ombre',this)"><i class="fas fa-cloud"></i> Ombragé</div>
+          <div class="chip chip-default" data-filter="accessible" onclick="Explorer.toggleAmenityFilter('accessible',this)"><i class="fas fa-wheelchair"></i> Accessible</div>
+          <div class="chip chip-default" data-filter="court" onclick="Explorer.toggleAmenityFilter('court',this)"><i class="fas fa-clock"></i> < 30 min</div>
+        </div>
+      </div>
+
+      <!-- Results -->
+      <div id="explore-results" class="flex flex-col gap-4"></div>
+
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- VUE : MATCHING SPORTIF                                        -->
+    <!-- ============================================================ -->
+    <section class="view" id="view-match">
+
+      <!-- Matching header -->
+      <div class="card card-p" style="background:linear-gradient(135deg,var(--forest-100),var(--energy-100));border:1px solid var(--forest-200);">
+        <div class="flex items-center gap-3 mb-3">
+          <div class="icon-circle icon-circle-lg icon-circle-green"><i class="fas fa-heart"></i></div>
+          <div>
+            <div class="text-base fw-8 text-dark">Matching Sportif</div>
+            <div class="text-xs text-muted mt-1">Compatibilité allure · disponibilité · zone</div>
+          </div>
+        </div>
+        <div class="flex gap-2">
+          <div style="flex:1;background:white;border-radius:12px;padding:10px;text-align:center;box-shadow:var(--shadow-xs);">
+            <div class="text-lg fw-9 text-forest" id="match-count">12</div>
+            <div class="text-xs text-muted fw-6">compatibles</div>
+          </div>
+          <div style="flex:1;background:white;border-radius:12px;padding:10px;text-align:center;box-shadow:var(--shadow-xs);">
+            <div class="text-lg fw-9 text-energy" id="match-online-count">8</div>
+            <div class="text-xs text-muted fw-6">en ligne</div>
+          </div>
+          <div style="flex:1;background:white;border-radius:12px;padding:10px;text-align:center;box-shadow:var(--shadow-xs);">
+            <div class="text-lg fw-9 text-dark" id="match-zone-count">5</div>
+            <div class="text-xs text-muted fw-6">même zone</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Mon profil sportif (pour le matching) -->
+      <div class="card card-p">
+        <div class="text-sm fw-8 text-dark mb-3">Mon profil sportif</div>
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-muted fw-6">Allure préférée</span>
+            <div class="flex gap-2" id="my-pace-selector">
+              <div class="chip chip-sm chip-default" data-pace="marche" onclick="Matching.setMyPace('marche',this)" style="font-size:11px;padding:4px 10px;">Marche</div>
+              <div class="chip chip-sm chip-active" data-pace="footing" onclick="Matching.setMyPace('footing',this)" style="font-size:11px;padding:4px 10px;">Footing</div>
+              <div class="chip chip-sm chip-default" data-pace="trail" onclick="Matching.setMyPace('trail',this)" style="font-size:11px;padding:4px 10px;">Trail</div>
+            </div>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-muted fw-6">Zone favorite</span>
+            <select class="input-field" style="width:auto;padding:6px 12px;font-size:13px;font-weight:600;" id="my-zone-selector" onchange="Matching.setMyZone(this.value)">
+              <option value="gayeulles">Gayeulles</option>
+              <option value="thabor">Thabor</option>
+              <option value="beauregard" selected>Beauregard</option>
+              <option value="soeuvres">Soeuvres</option>
+              <option value="lifre">Liffré</option>
+            </select>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm text-muted fw-6">Disponibilité</span>
+            <div class="flex gap-2">
+              <div class="chip chip-default" data-avail="matin" onclick="Matching.toggleAvail('matin',this)" style="font-size:11px;padding:4px 10px;">Matin</div>
+              <div class="chip chip-active" data-avail="midi" onclick="Matching.toggleAvail('midi',this)" style="font-size:11px;padding:4px 10px;">Midi</div>
+              <div class="chip chip-active" data-avail="soir" onclick="Matching.toggleAvail('soir',this)" style="font-size:11px;padding:4px 10px;">Soir</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Matches list -->
+      <div class="section-header">
+        <span class="section-title">Vos meilleurs matches</span>
+        <button class="btn btn-ghost btn-sm" onclick="Matching.refresh()"><i class="fas fa-sync-alt"></i> Actualiser</button>
+      </div>
+      <div id="match-list" class="flex flex-col gap-3"></div>
+
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- VUE : CLUBS ÉPHÉMÈRES                                         -->
+    <!-- ============================================================ -->
+    <section class="view" id="view-clubs">
+
+      <!-- Header action -->
+      <div class="flex justify-between items-center">
+        <div>
+          <div class="text-xl fw-9 text-dark">Clubs éphémères</div>
+          <div class="text-xs text-muted mt-1">Événements live dans vos parcs</div>
+        </div>
+        <button class="btn btn-energy btn-md" onclick="ClubSystem.openCreateModal()">
+          <i class="fas fa-plus"></i> Créer
+        </button>
+      </div>
+
+      <!-- Map mini -->
+      <div class="map-wrapper" style="height:200px;">
+        <div id="clubs-map" style="width:100%;height:100%;border-radius:inherit;"></div>
+        <div class="map-overlay-stats">
+          <div class="map-stat-row">
+            <div class="map-stat-dot map-stat-dot-orange"></div>
+            <span id="clubs-map-count">5 clubs</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filter tabs -->
+      <div class="filter-bar" id="clubs-filter">
+        <div class="chip chip-active" data-status="all" onclick="ClubSystem.filterClubs('all',this)">Tous</div>
+        <div class="chip chip-default" data-status="live" onclick="ClubSystem.filterClubs('live',this)"><i class="fas fa-circle" style="color:#22C55E;font-size:8px;"></i> En cours</div>
+        <div class="chip chip-default" data-status="soon" onclick="ClubSystem.filterClubs('soon',this)"><i class="fas fa-clock"></i> Bientôt</div>
+        <div class="chip chip-default" data-status="marche" onclick="ClubSystem.filterClubs('marche',this)"><i class="fas fa-walking"></i> Marche</div>
+        <div class="chip chip-default" data-status="footing" onclick="ClubSystem.filterClubs('footing',this)"><i class="fas fa-running"></i> Footing</div>
+        <div class="chip chip-default" data-status="trail" onclick="ClubSystem.filterClubs('trail',this)"><i class="fas fa-mountain"></i> Trail</div>
+      </div>
+
+      <!-- Clubs list -->
+      <div id="clubs-list" class="flex flex-col gap-3"></div>
+
+    </section>
+
+    <!-- ============================================================ -->
+    <!-- VUE : PROFIL                                                   -->
+    <!-- ============================================================ -->
+    <section class="view" id="view-profile">
+
+      <!-- Profile header -->
+      <div class="profile-header">
+        <div class="profile-header-bg"></div>
+        <div class="profile-avatar-ring" style="position:relative;z-index:1;">
+          <img src="https://ui-avatars.com/api/?name=Flavien+G&background=2D6A4F&color=fff&bold=true&size=200" alt="Avatar" id="profile-avatar-img">
+        </div>
+        <div class="profile-name" style="position:relative;z-index:1;" id="profile-name">Flavien G.</div>
+        <div class="profile-handle" style="position:relative;z-index:1;" id="profile-handle">@flavien · Rennes 🌿</div>
+        <div class="profile-stats-row" style="position:relative;z-index:1;">
+          <div class="profile-stat">
+            <div class="profile-stat-val" id="pstat-km">0</div>
+            <div class="profile-stat-lab">km</div>
+          </div>
+          <div class="profile-stat">
+            <div class="profile-stat-val" id="pstat-friends">0</div>
+            <div class="profile-stat-lab">amis</div>
+          </div>
+          <div class="profile-stat">
+            <div class="profile-stat-val" id="pstat-rank">#—</div>
+            <div class="profile-stat-lab">rang</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Niveau & XP -->
+      <div class="card card-p">
+        <div class="flex justify-between items-center mb-2">
+          <div class="flex items-center gap-2">
+            <div class="icon-circle icon-circle-md icon-circle-green"><i class="fas fa-seedling"></i></div>
+            <div>
+              <div class="text-sm fw-8 text-dark" id="profile-level-name">Explorateur</div>
+              <div class="text-xs text-muted" id="profile-level-sub">Niveau 3 · 1 240 XP</div>
+            </div>
+          </div>
+          <span class="text-xs fw-7 text-forest" id="profile-xp-to-next">+260 XP pour Niveau 4</span>
+        </div>
+        <div class="progress-bar"><div class="progress-fill" id="profile-xp-bar" style="width:48%;"></div></div>
+      </div>
+
+      <!-- Chart radar compétences -->
+      <div class="card card-p">
+        <div class="text-sm fw-8 text-dark mb-3">Profil de compétences</div>
+        <div style="height:200px;position:relative;"><canvas id="skills-radar-chart"></canvas></div>
+      </div>
+
+      <!-- Badges -->
+      <div class="card card-p">
+        <div class="section-header mb-3">
+          <span class="text-sm fw-8 text-dark">Badges</span>
+          <span class="text-xs text-forest fw-7" id="badges-count">4 / 16</span>
+        </div>
+        <div class="badge-grid" id="badges-grid"></div>
+      </div>
+
+      <!-- Sécurité & Paramètres -->
+      <div class="security-panel">
+        <div class="flex items-center gap-3 mb-4">
+          <div class="icon-circle icon-circle-md icon-circle-red"><i class="fas fa-shield-alt"></i></div>
+          <div>
+            <div class="text-sm fw-8 text-dark">Mode Sécurité Mairie</div>
+            <div class="text-xs text-muted">RGPD · Urgence · Accessibilité</div>
+          </div>
+        </div>
+        <div class="sos-btn sos-pulse" onclick="Security.triggerSOS()"><i class="fas fa-phone"></i></div>
+        <p class="text-xs text-muted text-center mt-3 mb-4">Maintenir 3 secondes pour appeler le 15</p>
+        <div class="flex flex-col gap-3">
+          <div class="flex justify-between items-center">
+            <span class="text-sm fw-6 text-dark"><i class="fas fa-low-vision mr-2" style="color:var(--water-500);"></i>Accessibilité (Police +)</span>
+            <label class="toggle"><input type="checkbox" id="toggle-access" onchange="Security.toggleAccessibility(this)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm fw-6 text-dark"><i class="fas fa-user-shield mr-2" style="color:var(--forest-600);"></i>Mode Anonyme (RGPD)</span>
+            <label class="toggle"><input type="checkbox" id="toggle-anon" onchange="Security.toggleAnonymous(this)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+          </div>
+          <div class="flex justify-between items-center">
+            <span class="text-sm fw-6 text-dark"><i class="fas fa-map-marker-alt mr-2" style="color:var(--energy-600);"></i>Partager ma position</span>
+            <label class="toggle"><input type="checkbox" id="toggle-geo" checked onchange="Security.toggleGeo(this)"><div class="toggle-track"></div><div class="toggle-thumb"></div></label>
+          </div>
+        </div>
+        <div class="mt-4 p-3 rounded-xl" style="background:rgba(27,67,50,0.05);border:1px solid var(--forest-200);">
+          <p class="text-xs text-muted fw-6">🔒 Données hébergées en France · Aucune revente · Conformité RGPD totale · Droit à l'effacement disponible</p>
+        </div>
+      </div>
+
+    </section>
+
+  </main><!-- /main-scroll -->
+
+  <!-- BOTTOM NAV -->
+  <nav id="bottom-nav">
+    <button class="nav-btn active" id="nav-home" onclick="App.nav('home')">
+      <div class="nav-icon"><i class="fas fa-home"></i></div>
+      <span class="nav-label">Accueil</span>
+    </button>
+    <button class="nav-btn" id="nav-explore" onclick="App.nav('explore')">
+      <div class="nav-icon"><i class="fas fa-map"></i></div>
+      <span class="nav-label">Explorer</span>
+    </button>
+    <button class="nav-btn nav-radar" id="nav-radar" onclick="App.nav('radar')">
+      <div class="nav-icon"><i class="fas fa-satellite-dish"></i></div>
+      <span class="nav-label">Radar</span>
+    </button>
+    <button class="nav-btn" id="nav-match" onclick="App.nav('match')">
+      <div class="nav-icon"><i class="fas fa-heart"></i></div>
+      <span class="nav-label">Matches</span>
+      <div class="nav-badge" id="match-badge">3</div>
+    </button>
+    <button class="nav-btn" id="nav-profile" onclick="App.nav('profile')">
+      <div class="nav-icon"><i class="fas fa-user"></i></div>
+      <span class="nav-label">Profil</span>
+    </button>
+  </nav>
+
+</div><!-- /app-root -->
+
+<!-- ======================================================================
+     MODALS
+     ====================================================================== -->
+
+<!-- Backdrop -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="Modal.closeAll()"></div>
+
+<!-- Modal Profil Utilisateur -->
+<div class="modal-sheet" id="modal-user-profile">
+  <div class="modal-handle"></div>
+  <div id="modal-user-profile-content"></div>
+</div>
+
+<!-- Modal Créer un Club -->
+<div class="modal-sheet" id="modal-create-club">
+  <div class="modal-handle"></div>
+  <div class="modal-title">Créer un Club Éphémère</div>
+  <div class="flex flex-col gap-4">
+    <div>
+      <label class="text-xs fw-7 text-muted mb-1" style="display:block;text-transform:uppercase;letter-spacing:0.5px;">Nom du club</label>
+      <input type="text" class="input-field" id="club-name-input" placeholder="Ex: Trail du Thabor à 18h">
+    </div>
+    <div>
+      <label class="text-xs fw-7 text-muted mb-1" style="display:block;text-transform:uppercase;letter-spacing:0.5px;">Zone</label>
+      <select class="input-field" id="club-zone-input">
+        <option value="gayeulles">Parc des Gayeulles</option>
+        <option value="thabor">Parc du Thabor</option>
+        <option value="beaulieu">Campus de Beaulieu</option>
+        <option value="beauregard">Bois de Beauregard</option>
+        <option value="soeuvres">Bois de Soeuvres</option>
+        <option value="rheu">Bois du Rheu</option>
+        <option value="lifre">Forêt de Liffré</option>
+        <option value="teillay">Forêt de Teillay</option>
+      </select>
+    </div>
+    <div>
+      <label class="text-xs fw-7 text-muted mb-1" style="display:block;text-transform:uppercase;letter-spacing:0.5px;">Activité</label>
+      <div class="flex gap-2" id="club-activity-selector">
+        <div class="chip chip-active" data-act="footing" onclick="ClubSystem.selectActivity('footing',this)"><i class="fas fa-running"></i> Footing</div>
+        <div class="chip chip-default" data-act="marche" onclick="ClubSystem.selectActivity('marche',this)"><i class="fas fa-walking"></i> Marche</div>
+        <div class="chip chip-default" data-act="trail" onclick="ClubSystem.selectActivity('trail',this)"><i class="fas fa-mountain"></i> Trail</div>
+      </div>
+    </div>
+    <div class="flex gap-3">
+      <div style="flex:1;">
+        <label class="text-xs fw-7 text-muted mb-1" style="display:block;text-transform:uppercase;letter-spacing:0.5px;">Heure</label>
+        <input type="time" class="input-field" id="club-time-input" value="18:00">
+      </div>
+      <div style="flex:1;">
+        <label class="text-xs fw-7 text-muted mb-1" style="display:block;text-transform:uppercase;letter-spacing:0.5px;">Max participants</label>
+        <input type="number" class="input-field" id="club-max-input" value="8" min="2" max="30">
+      </div>
+    </div>
+    <button class="btn btn-energy btn-lg btn-full mt-2" onclick="ClubSystem.createClub()">
+      <i class="fas fa-plus"></i> Créer le club
+    </button>
+  </div>
+</div>
+
+<!-- Modal Détail Parcours -->
+<div class="modal-sheet" id="modal-trail-detail">
+  <div class="modal-handle"></div>
+  <div id="modal-trail-content"></div>
+</div>
+
+<!-- Modal Poc / Message rapide -->
+<div class="modal-sheet" id="modal-poc">
+  <div class="modal-handle"></div>
+  <div id="modal-poc-content"></div>
+</div>
+
+<!-- JS -->
+<script src="script.js"></script>
+</body>
+</html>
