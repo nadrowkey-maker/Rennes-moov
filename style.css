@@ -1,7 +1,7 @@
 @charset "UTF-8";
 
 /* ==========================================================================
-   HEBERMOOV ELITE - DESIGN SYSTEM v12.1 (Ultimate Silicon Valley)
+   HEBERMOOV - Design System — Sport & Santé Rennes
    ========================================================================== */
 
 :root {
@@ -55,7 +55,7 @@
 }
 
 /* ==========================================================================
-   VARIABLES DU MODE TACTIQUE (Infrarouge)
+   VARIABLES DU MODE NUIT (Contraste Élevé)
    ========================================================================== */
 body.tactical-mode {
     --volt: #ff003c; 
@@ -416,7 +416,7 @@ body.tactical-mode #app-shell { animation: tactical-glitch 0.2s ease-in-out; }
 .group:hover .group-hover\:opacity-100 { opacity: 1; } .group:hover .group-hover\:text-volt { color: var(--volt); }
 
 /* ==========================================================================
-   7. SIMULATION CEO (IPAD/PC) - Supprime ce bloc pour forcer le plein écran iPad
+   7. VUE DESKTOP / DÉMO - Supprime ce bloc pour forcer le plein écran iPad
    ========================================================================== */
 @media (min-width: 768px) {
     body {
