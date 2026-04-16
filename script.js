@@ -933,7 +933,6 @@ const ClubSystem = {
     const user = DB.users.find(u => u.id === userId);
     Toast.show("Invitation envoyee !", `${user?.name?.split(" ")[0]||"Cet utilisateur"} a ete invite`, "green", "paper-plane");
   },
-  },
 
   inviteToUser(uid, btn) {
     if (btn) { btn.innerHTML = "&#10003; Invité"; btn.className = "btn btn-sent btn-md"; btn.disabled = true; }
@@ -943,6 +942,7 @@ const ClubSystem = {
     const u = DB.users.find(x => x.id === uid);
     Toast.show("Invitation envoyée !", u?.name?.split(" ")[0] || "", "green", "paper-plane");
   },
+};
 
 // =============================================================================
 // MODULE 14 — PROFILE
